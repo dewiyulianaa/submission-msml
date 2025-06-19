@@ -17,8 +17,8 @@ mlflow.autolog()
 mlflow.set_experiment("Prediksi_Karyawan_Resign")
 
 # Muat data
-X = pd.read_csv(r"membangun model\HR_preprocessing\X_final.csv")
-y = pd.read_csv(r"membangun model\HR_preprocessing\y_final.csv ")
+X = pd.read_csv(r"membangun_model\HR_preprocessing\X_final.csv")
+y = pd.read_csv(r"membangun_model\HR_preprocessing\y_final.csv ")
 y = y.values.ravel()
 
 # Split data

@@ -3,7 +3,7 @@ name: MLflow CI
 on:
   push:
     branches:
-    - main
+      - main
   pull_request:
 
 jobs:
@@ -13,16 +13,13 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
+    - name: Set up Conda
+      uses: conda-incubator/setup-miniconda@v2
       with:
+        auto-update-conda: true
+        environment-file: membangun_model/conda.yaml
+        activate-environment: prediksi_env
         python-version: 3.12
 
-    - name: Install dependencies
-      run: |
-        pip install mlflow==2.19.0 pandas numpy scikit-learn
-
     - name: Run MLflow Project
-      run: |
-        cd membangun_model
-        mlflow run .
+      run: mlflow run membangun_model

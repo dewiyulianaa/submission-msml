@@ -8,4 +8,4 @@ dependencies:
   - numpy
   - pip
   - pip:
-      - mlflow
+      - mlflow==2.19.0

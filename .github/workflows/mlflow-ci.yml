@@ -25,3 +25,4 @@ jobs:
     - name: Run MLflow project
       run: |
         mlflow run Membangun model
+        mlflow run .

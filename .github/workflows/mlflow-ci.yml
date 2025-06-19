@@ -22,7 +22,7 @@ jobs:
       run: |
         pip install mlflow==2.19.0 pandas numpy scikit-learn
 
-    - name: Run MLflow project
+    - name: Run MLflow Project
       run: |
-        mlflow run Membangun model
+        cd Membangun_model
         mlflow run .

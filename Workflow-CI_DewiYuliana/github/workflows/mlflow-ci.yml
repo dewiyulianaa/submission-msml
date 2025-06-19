@@ -25,4 +25,5 @@ jobs:
 
     - name: Run MLflow Project
       run: |
-        mlflow run Membangun_model
+        cd Membangun model
+        mlflow run .

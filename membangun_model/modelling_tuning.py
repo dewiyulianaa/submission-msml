@@ -6,47 +6,43 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import joblib
 
-# Load data
-X = pd.read_csv("membangun model\X_final.csv")
-y = pd.read_csv("membangun model\y_final.csv")
+# Aktifkan autolog agar MLflow otomatis log semua metrik, parameter, dan artefak
+mlflow.autolog()
 
-# Split data
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Load dataset
+X = pd.read_csv("https://raw.githubusercontent.com/dewiyulianaa/submission-msml/main/membangun_model/HR_preprocessing/X_final.csv")
+y = pd.read_csv("https://raw.githubusercontent.com/dewiyulianaa/submission-msml/main/membangun_model/HR_preprocessing/y_final.csv")
+y = y.values.ravel()  # ubah ke bentuk array 1 dimensi
 
-# MLflow setup
+# Split data (stratify biar distribusi target sama)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+# Set experiment
 mlflow.set_experiment("Tuning Logistic Regression")
 
 with mlflow.start_run():
-    # Define model and parameter grid
+    # Definisikan model dasar dan hyperparameter
     model = LogisticRegression(solver='liblinear', random_state=42)
     param_grid = {
-        'C': [0.01, 0.1, 1.0, 10.0],  # regularisasi
+        'C': [0.01, 0.1, 1.0, 10.0],
         'penalty': ['l1', 'l2']
     }
 
     # Grid search
     grid = GridSearchCV(model, param_grid, cv=5, scoring='accuracy', n_jobs=-1)
-    grid.fit(X_train, y_train.values.ravel())
+    grid.fit(X_train, y_train)
 
+    # Evaluasi
     best_model = grid.best_estimator_
     y_pred = best_model.predict(X_test)
 
-    # Metrics
-    acc = accuracy_score(y_test, y_pred)
-    prec = precision_score(y_test, y_pred)
-    rec = recall_score(y_test, y_pred)
-    f1 = f1_score(y_test, y_pred)
-
-    # MLflow logging
-    mlflow.log_params(grid.best_params_)
-    mlflow.log_metric("accuracy", acc)
-    mlflow.log_metric("precision", prec)
-    mlflow.log_metric("recall", rec)
-    mlflow.log_metric("f1_score", f1)
-    mlflow.sklearn.log_model(best_model, "logreg_tuned_model")
-
-    # Simpan lokal juga
-    joblib.dump(best_model, "best_logreg_model.pkl")
-
     print("Best Params:", grid.best_params_)
-    print("Accuracy:", acc)
+    print("Accuracy:", accuracy_score(y_test, y_pred))
+    print("Precision:", precision_score(y_test, y_pred))
+    print("Recall:", recall_score(y_test, y_pred))
+    print("F1 Score:", f1_score(y_test, y_pred))
+
+    # Simpan model terbaik ke file lokal (optional)
+    joblib.dump(best_model, "best_logreg_model.pkl")

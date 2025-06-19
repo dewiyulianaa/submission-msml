@@ -21,5 +21,13 @@ jobs:
         activate-environment: prediksi_env
         python-version: 3.12
 
+    - name: Install MLflow CLI manually
+      shell: bash -l {0}
+      run: |
+        conda install pip
+        pip install mlflow==2.19.0
+
     - name: Run MLflow Project
-      run: mlflow run membangun_model
+      shell: bash -l {0}
+      run: |
+        mlflow run membangun_model
